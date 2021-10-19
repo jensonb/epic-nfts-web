@@ -9,6 +9,8 @@ const FOOTER_LINK = 'https://www.lootgod.com';
 const OPENSEA_COLLECTION = 'https://testnets.opensea.io/collection/peoplenft';
 const OPENSEA_LINK = 'https://testnets.opensea.io/assets/';
 const CONTRACT_ADDRESS = '0x93d19fdcBAD675A4540eb2d46142EFb274678498';
+const DEFAULT_NETWORK = 'rinkeby';
+const ALCHEMY_KEY = 'v-NC_ovm48SaZ2ZGn7mR-qy6QT2CJkJm';
 
 const App = () => {
 
@@ -103,24 +105,22 @@ const App = () => {
     }
 
     const getNftData = async () => {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft.abi, signer);
-        const [_nftCount, nftLimit, nftName] = await Promise.all([connectedContract.getNFTCount(), connectedContract.getNFTLimit(), connectedContract.name()]);
-        const nftCount = ethers.BigNumber.from(_nftCount).toNumber();
-        setNftCount(nftCount);
-        setNftLimit(nftLimit);
-        setNftName(nftName);
-        const newFeed = [...Array(nftCount).keys()].reverse().map((each) => each.toString());
-        console.log({ nftCount, nftLimit, nftName });
-        console.log('newFeed: ', JSON.stringify(newFeed));
-        setMintFeed(newFeed);
-      } else {
-        console.log('Need metamask!');
-      }
+        const provider = new ethers.providers.AlchemyProvider(DEFAULT_NETWORK, ALCHEMY_KEY);
+        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft.abi, provider);
+        try {
+          const [_nftCount, nftLimit, nftName] = await Promise.all([connectedContract.getNFTCount(), connectedContract.getNFTLimit(), connectedContract.name()]);
+          const nftCount = ethers.BigNumber.from(_nftCount).toNumber();
+          setNftCount(nftCount);
+          setNftLimit(nftLimit);
+          setNftName(nftName);
+          const newFeed = [...Array(nftCount).keys()].reverse().map((each) => each.toString());
+          console.log({ nftCount, nftLimit, nftName });
+          console.log('newFeed: ', JSON.stringify(newFeed));
+          setMintFeed(newFeed);
+        } catch (e) {
+          console.log('caught error while fetching collection data');
+          console.log(e);
+        }
     }
 
     (async function runEffects() {
@@ -249,19 +249,12 @@ const FeedItem = ({ id }) => {
 
   React.useEffect(() => {
     const getData = async () => {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft.abi, signer);
-        const data = await connectedContract.tokenURI(id);
-        const json = Buffer.from(data.split(',')[1], 'base64').toString();
-        const parsed = JSON.parse(json);
-        setData(parsed);
-      } else {
-        console.log('Need metamask!');
-      }
+      const provider = new ethers.providers.AlchemyProvider(DEFAULT_NETWORK, ALCHEMY_KEY);
+      const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft.abi, provider);
+      const data = await connectedContract.tokenURI(id);
+      const json = Buffer.from(data.split(',')[1], 'base64').toString();
+      const parsed = JSON.parse(json);
+      setData(parsed);
     }
 
     getData();
