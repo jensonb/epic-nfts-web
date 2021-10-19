@@ -1,7 +1,7 @@
 .App {
   height: 100vh;
   background-color: #0d1116;
-  overflow: scroll;
+  overflow: auto;
   text-align: center;
 }
 
@@ -25,6 +25,11 @@
 
 .sub-text {
   font-size: 25px;
+  color: white;
+}
+
+.sub-sub-text {
+  font-size: 18px;
   color: white;
 }
 
@@ -61,6 +66,18 @@
   margin-right: 15px;
 }
 
+.disabled-button {
+  background: grey;
+  cursor: default;
+}
+
+.spinning {
+  animation-name: spin;
+  animation-duration: 6000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
 .opensea-button {
   background-color: rgb(32, 129, 226);
 }
@@ -69,6 +86,27 @@
   color: white;
   font-size: 18px;
   font-weight: bold;
+}
+
+.feed-container {
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 700px;
+}
+
+.feed-item {
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 8px;
+  margin-bottom: 16px;
+}
+
+.feed-image {
+  height: 200px;
 }
 
 .footer-container {
@@ -87,6 +125,15 @@
   color: white;
   font-size: 16px;
   font-weight: bold;
+}
+
+/* Animation */
+.x {
+  animation: bounceX 7s linear infinite;
+}
+
+.y {
+  animation: bounceY 5s linear infinite;
 }
 
 /* KeyFrames */
@@ -121,5 +168,56 @@
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.5);
+  }
+  50% {
+    transform: rotate(180deg) scale(1);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.5);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@keyframes bounceX {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-25vw);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  75% {
+    transform: translateX(25vw);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes bounceY {
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-25vh);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(25vh);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
